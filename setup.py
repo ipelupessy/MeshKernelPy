@@ -73,9 +73,9 @@ def list_shared_lib_dependencies() -> List[str]:
         List[str]: List of dll_dependencies
     """
     if platform.system() == "Windows":
-        return ["libboost_system.so.1.73.0", "libboost_filesystem.so.1.73.0"]
-    elif platform.system() == "Linux":
         return []
+    elif platform.system() == "Linux":
+        return ["libboost_system.so.1.73.0", "libboost_filesystem.so.1.73.0"]
     raise OSError("Unsupported operating system")
 
 
