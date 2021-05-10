@@ -55,15 +55,25 @@ class MeshKernel:
         """
 
         # Determine OS
+        current_path = Path(__file__).parent
         if platform.system() == "Windows":
-            lib_path = Path(__file__).parent / "MeshKernelApi.dll"
+            lib_path = current_path / "MeshKernelApi.dll"
         elif platform.system() == "Linux":
-            lib_path = Path(__file__).parent / "libMeshKernelApi.so"
+            lib_path = current_path / "libMeshKernelApi.so"
+            self._add_to_ld_library_path(str(current_path))
         else:
             raise OSError("Unsupported operating system")
 
         self.lib = CDLL(str(lib_path))
         self._allocate_state(is_geographic)
+
+    def _add_to_ld_library_path(self, path: str) -> None:
+        if "LD_LIBRARY_PATH" in os.environ:
+            os.environ["LD_LIBRARY_PATH"] = (
+                path + os.pathsep + os.environ["LD_LIBRARY_PATH"]
+            )
+        else:
+            os.environ["LD_LIBRARY_PATH"] = path
 
     def __del__(self):
         self._deallocate_state()

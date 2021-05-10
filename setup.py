@@ -3,6 +3,7 @@ import os.path
 import platform
 import sys
 from pathlib import Path
+from typing import List
 
 from setuptools import Distribution, find_namespace_packages, setup
 
@@ -65,6 +66,19 @@ def get_meshkernel_name() -> str:
     raise OSError("Unsupported operating system")
 
 
+def list_shared_lib_dependencies() -> List[str]:
+    """Returns the list of dll_dependencies which differs by OS
+
+    Returns:
+        List[str]: List of dll_dependencies
+    """
+    if platform.system() == "Windows":
+        return ["libboost_system.so.1.73.0", "libboost_filesystem.so.1.73.0"]
+    elif platform.system() == "Linux":
+        return []
+    raise OSError("Unsupported operating system")
+
+
 try:
     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
@@ -116,7 +130,7 @@ setup(
     python_requires=">=3.8",
     packages=["meshkernel"],
     package_data={
-        "meshkernel": [get_meshkernel_name()],
+        "meshkernel": [get_meshkernel_name()] + list_shared_lib_dependencies(),
     },
     cmdclass={"bdist_wheel": bdist_wheel},
     version=get_version("meshkernel/__init__.py"),
