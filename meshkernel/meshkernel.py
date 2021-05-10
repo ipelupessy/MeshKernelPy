@@ -60,7 +60,7 @@ class MeshKernel:
             lib_path = current_path / "MeshKernelApi.dll"
         elif platform.system() == "Linux":
             lib_path = current_path / "libMeshKernelApi.so"
-            self._add_to_ld_library_path(str(current_path))
+            self._add_to_ld_library_path(str(current_path) + "/")
         else:
             raise OSError("Unsupported operating system")
 
